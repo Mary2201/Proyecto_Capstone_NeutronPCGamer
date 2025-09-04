@@ -1,0 +1,5 @@
+# Node / TypeScript
+node_modules
+dist
+.env
+apps/**/.env
