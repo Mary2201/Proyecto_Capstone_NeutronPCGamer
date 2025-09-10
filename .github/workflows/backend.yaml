@@ -1,0 +1,44 @@
+name: backend-ci
+
+on:
+  push:
+    paths: ["apps/backend/**"]
+    branches: ["main"]
+  pull_request:
+    paths: ["apps/backend/**"]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "apps/backend/package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Test
+        run: npm test --if-present
+
+      - name: Build
+        run: npm run build
+
+      # 🚫 Deploy lo dejas comentado hasta que actives Railway
+      # - name: Deploy to Railway
+      #   uses: bervProject/railway-deploy@main
+      #   env:
+      #     RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      #   with:
+      #     service: "my-backend-service"
